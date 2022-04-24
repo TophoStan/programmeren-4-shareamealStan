@@ -21,40 +21,40 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/api/movie", (req, res) => {
-  let movie = req.body;
+app.post("/api/meal", (req, res) => {
+  let meal = req.body;
   id++;
-  movie = {
+  meal = {
     id,
-    ...movie,
+    ...meal,
   };
-  console.log(movie);
-  database.push(movie);
+  console.log(meal);
+  database.push(meal);
   res.status(201).json({
     status: 201,
     result: database,
   });
 });
 
-app.get("/api/movie/:movieId", (req, res, next) => {
-  const movieId = req.params.movieId;
-  console.log(`Movie met ID ${movieId} gezocht`);
-  let movie = database.filter((item) => item.id == movieId);
-  if (movie.length > 0) {
-    console.log(movie);
+app.get("/api/meal/:mealId", (req, res, next) => {
+  const mealId = req.params.mealId;
+  console.log(`meal met ID ${mealId} gezocht`);
+  let meal = database.filter((item) => item.id == mealId);
+  if (meal.length > 0) {
+    console.log(meal);
     res.status(200).json({
       status: 200,
-      result: movie,
+      result: meal,
     });
   } else {
     res.status(401).json({
       status: 401,
-      result: `Movie with ID ${movieId} not found`,
+      result: `meal with ID ${mealId} not found`,
     });
   }
 });
 
-app.get("/api/movie", (req, res, next) => {
+app.get("/api/meal", (req, res, next) => {
   res.status(200).json({
     status: 200,
     result: database,
