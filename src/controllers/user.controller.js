@@ -6,23 +6,23 @@ let id = 0;
 let controller = {
   validateUser: (req, res, next) => {
     let user = req.body;
-    let { firstName, lastName, emailAddress, password } = user;
+    let { firstName, lastName, emailAdress, password } = user;
     try {
       assert(typeof firstName === "string", "firstName Must be a String");
       assert(typeof lastName === "string", "lastName Must be a String");
-      assert(typeof emailAddress === "string", "emailAddress Must be a String");
+      assert(typeof emailAdress === "string", "emailAdress Must be a String");
       next();
     } catch (err) {
-      console.log(err.message);
-      res.status(400).json({
+      const error = {
         status: 400,
-        error: err.toString(),
-      });
+        result: err.message,
+      };
+      next(error);
     }
   },
   addUser: (req, res) => {
     const result = database.filter(
-      (user) => user.emailAddress == req.body.emailAddress
+      (user) => user.emailAdress == req.body.emailAdress
     );
     if (result.length > 0) {
       res.status(409).json({
@@ -37,7 +37,7 @@ let controller = {
         lastName: user.lastName,
         street: user.street,
         city: user.city,
-        emailAddress: user.emailAddress,
+        emailAdress: user.emailAdress,
         phoneNumber: user.phoneNumber,
         password: user.password,
         roles: user.roles,
@@ -55,7 +55,7 @@ let controller = {
       result: database,
     });
   },
-  getUserById: (req, res) => {
+  getUserById: (req, res, next) => {
     const userId = req.params.userId;
     let result = database.filter((user) => user.id == userId);
     if (result.length > 0) {
@@ -64,9 +64,11 @@ let controller = {
         result: result,
       });
     } else {
-      res.status(404).json({
-        message: "No user with provided id",
-      });
+      const error = {
+        status: 404,
+        result: `User with Id ${userId} does not exist`,
+      };
+      next(error);
     }
   },
   getUserProfile: (req, res) => {
@@ -85,7 +87,7 @@ let controller = {
         lastName: user.lastName,
         street: user.street,
         city: user.city,
-        emailAddress: user.emailAddress,
+        emailAdress: user.emailAdress,
         phoneNumber: user.phoneNumber,
         password: user.password,
         roles: user.roles,
