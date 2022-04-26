@@ -8,9 +8,9 @@ let controller = {
     let user = req.body;
     let { firstName, lastName, emailAdress, password } = user;
     try {
-      assert(typeof firstName === "string", "firstName Must be a String");
-      assert(typeof lastName === "string", "lastName Must be a String");
-      assert(typeof emailAdress === "string", "emailAdress Must be a String");
+      assert(typeof firstName === "string", "firstName must be a string");
+      assert(typeof lastName === "string", "lastName must be a string");
+      assert(typeof emailAdress === "string", "emailAdress must be a string");
       next();
     } catch (err) {
       const error = {
