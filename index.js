@@ -18,10 +18,17 @@ app.get("/", (req, res) => {
   });
 });
 
-const userRoute = require("./routes/User");
-const mealRoute = require("./routes/Meal");
+const userRoute = require("./src/routes/User");
+const mealRoute = require("./src/routes/Meal");
 app.use("/api/user", userRoute);
 app.use("/api/meal", mealRoute);
+
+app.all("*", (req, res) => {
+  res.status(404).json({
+    status: 404,
+    result: "End-point not found",
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

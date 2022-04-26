@@ -94,7 +94,7 @@ router.delete("/:userId", (req, res) => {
   console.log(userId);
   const result = database.findIndex((user) => user.id == userId);
   if (result > -1) {
-    database.splice(userId, 1);
+    database.splice(userId - 1, 1);
     res.status(200).json({
       message: "Succesfully deleted user",
     });

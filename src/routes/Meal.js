@@ -44,4 +44,6 @@ router.get("/", (req, res, next) => {
   });
 });
 
+router.put("/", (req, res) => {});
+
 module.exports = router;
