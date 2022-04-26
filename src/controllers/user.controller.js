@@ -1,10 +1,28 @@
+const assert = require("assert");
+
 let database = [];
 let id = 0;
 
 let controller = {
+  validateUser: (req, res, next) => {
+    let user = req.body;
+    let { firstName, lastName, emailAddress, password } = user;
+    try {
+      assert(typeof firstName === "string", "firstName Must be a String");
+      assert(typeof lastName === "string", "lastName Must be a String");
+      assert(typeof emailAddress === "string", "emailAddress Must be a String");
+      next();
+    } catch (err) {
+      console.log(err.message);
+      res.status(400).json({
+        status: 400,
+        error: err.toString(),
+      });
+    }
+  },
   addUser: (req, res) => {
     const result = database.filter(
-      (user) => user.emailaddress == req.body.emailaddress
+      (user) => user.emailAddress == req.body.emailAddress
     );
     if (result.length > 0) {
       res.status(409).json({
@@ -15,12 +33,12 @@ let controller = {
       id++;
       user = {
         id,
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         street: user.street,
         city: user.city,
-        emailaddress: user.emailaddress,
-        phonenumber: user.phonenumber,
+        emailAddress: user.emailAddress,
+        phoneNumber: user.phoneNumber,
         password: user.password,
         roles: user.roles,
       };
@@ -63,12 +81,12 @@ let controller = {
       let user = req.body;
       database[result] = {
         id: result + 1,
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         street: user.street,
         city: user.city,
-        emailaddress: user.emailaddress,
-        phonenumber: user.phonenumber,
+        emailAddress: user.emailAddress,
+        phoneNumber: user.phoneNumber,
         password: user.password,
         roles: user.roles,
       };
