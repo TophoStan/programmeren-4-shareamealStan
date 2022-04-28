@@ -11,6 +11,24 @@ let controller = {
       assert(typeof firstName === "string", "firstName must be a string");
       assert(typeof lastName === "string", "lastName must be a string");
       assert(typeof emailAdress === "string", "emailAdress must be a string");
+      assert(typeof password === "string", "password must be a string");
+      assert(
+        firstName.length > 0,
+        "firstName must be atleast one character long"
+      );
+      assert(
+        lastName.length > 0,
+        "lastName must be atleast one character long"
+      );
+      assert(
+        emailAdress.length > 0,
+        "emailAdress must be atleast one character long"
+      );
+      assert(
+        password.length > 0,
+        "password must be atleast one character long"
+      );
+
       next();
     } catch (err) {
       const error = {
@@ -24,9 +42,10 @@ let controller = {
     const result = database.filter(
       (user) => user.emailAdress == req.body.emailAdress
     );
-    if (result.length > 0) {
+    if (result.length) {
       res.status(409).json({
-        message: "User is niet toegevoegd in database",
+        status: 409,
+        result: "User is niet toegevoegd in database",
       });
     } else {
       let user = req.body;
@@ -44,6 +63,7 @@ let controller = {
       };
       database.push(user);
       res.status(200).json({
+        status: 200,
         message: "User is toegevoegd in database",
         result: user,
       });
