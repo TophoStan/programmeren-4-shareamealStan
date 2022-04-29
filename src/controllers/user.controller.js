@@ -1,4 +1,5 @@
 const assert = require("assert");
+const pool = require("../../database/dbconnection");
 
 let database = [];
 let id = 0;
@@ -70,9 +71,15 @@ let controller = {
     }
   },
   getAllUsers: (req, res) => {
-    res.status(200).json({
-      message: "Succesful retrieval",
-      result: database,
+    let users = [];
+    pool.query("SELECT * FROM User", (err, result, fields) => {
+      result.forEach((element) => {
+        users.push(element);
+      });
+      res.status(200).json({
+        message: "Succesful retrieval",
+        result: users,
+      });
     });
   },
   getUserById: (req, res, next) => {
