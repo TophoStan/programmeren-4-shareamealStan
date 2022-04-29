@@ -71,14 +71,10 @@ let controller = {
     }
   },
   getAllUsers: (req, res) => {
-    let users = [];
     pool.query("SELECT * FROM User", (err, result, fields) => {
-      result.forEach((element) => {
-        users.push(element);
-      });
       res.status(200).json({
         message: "Succesful retrieval",
-        result: users,
+        result: result,
       });
     });
   },
