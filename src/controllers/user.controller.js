@@ -71,10 +71,16 @@ let controller = {
     }
   },
   getAllUsers: (req, res) => {
-    pool.query("SELECT * FROM User", (err, result, fields) => {
+    let users = [];
+    pool.query("SELECT * FROM user", (error, results, fields) => {
+      console.log("#results: " + results.length);
+
+      results.forEach((user) => {
+        users.push(user);
+      });
       res.status(200).json({
-        message: "Succesful retrieval",
-        result: result,
+        status: 200,
+        result: users,
       });
     });
   },
