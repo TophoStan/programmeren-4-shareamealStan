@@ -74,7 +74,6 @@ let controller = {
     let users = [];
     pool.query("SELECT * FROM user", (error, results, fields) => {
       console.log("#results: " + results.length);
-
       results.forEach((user) => {
         users.push(user);
       });
@@ -86,19 +85,25 @@ let controller = {
   },
   getUserById: (req, res, next) => {
     const userId = req.params.userId;
-    let result = database.filter((user) => user.id == userId);
-    if (result.length > 0) {
-      console.log(result);
-      res.status(200).json({
-        result: result,
-      });
-    } else {
-      const error = {
-        status: 404,
-        result: `User with Id ${userId} does not exist`,
-      };
-      next(error);
-    }
+    pool.query(
+      `SELECT * FROM user WHERE id =${userId}`,
+      (err, results, fields) => {
+        if (err) throw err;
+        if (results.length > 0) {
+          res.status(200).json({
+            status: 200,
+            result: results,
+          });
+        } else {
+          const error = {
+            status: 400,
+            message: "user with provided Id does not exist",
+          };
+
+          next(error);
+        }
+      }
+    );
   },
   getUserProfile: (req, res) => {
     res.status(200).json({
@@ -106,30 +111,15 @@ let controller = {
     });
   },
   updateUser: (req, res) => {
-    let userId = req.params.userId;
-    const result = database.findIndex((user) => user.id == userId);
-    if (result > -1) {
-      let user = req.body;
-      database[result] = {
-        id: result + 1,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        street: user.street,
-        city: user.city,
-        emailAdress: user.emailAdress,
-        phoneNumber: user.phoneNumber,
-        password: user.password,
-        roles: user.roles,
-      };
-      res.status(200).json({
-        message: "succes",
-        result: database[result],
-      });
-    } else {
-      res.status(404).json({
-        message: "User with provided id does not exist",
-      });
-    }
+    const userId = req.params.userId;
+    const user = req.body;
+    pool.query(
+      `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
+      (err, results) => {
+        if (err) throw err;
+        
+      }
+    );
   },
   deleteUser: (req, res) => {
     let userId = req.params.userId;
