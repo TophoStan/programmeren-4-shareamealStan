@@ -140,8 +140,16 @@ let controller = {
       message: "Not implemented yet",
     });
   },
-  updateUser: (req, res) => {
+  updateUser: (req, res, next) => {
     const userId = req.params.userId;
+    if (!(typeof userId === "number")) {
+      const error = {
+        status: 400,
+        message: "userId must be a number",
+      };
+      next(error);
+      return;
+    }
     const user = req.body;
     pool.query(
       `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
@@ -161,6 +169,14 @@ let controller = {
   },
   deleteUser: (req, res, next) => {
     const userId = req.params.userId;
+    if (!(typeof userId === "number")) {
+      const error = {
+        status: 400,
+        message: "userId must be a number",
+      };
+      next(error);
+      return;
+    }
     pool.query(`DELETE FROM USER WHERE id=${userId}`, (err, results) => {
       if (err) throw err;
       const { affectedRows } = results;

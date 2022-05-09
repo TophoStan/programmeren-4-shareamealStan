@@ -6,9 +6,9 @@ router.post("/", userController.validateUser, userController.addUser);
 
 router.get("/", userController.getAllUsers);
 
-router.get("/profile", userController.getUserProfile);
-
 router.get("/:userId", userController.getUserById);
+
+router.get("/profile", userController.getUserProfile);
 
 router.put("/:userId", userController.validateUser, userController.updateUser);
 
