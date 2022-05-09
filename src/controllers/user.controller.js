@@ -114,6 +114,14 @@ let controller = {
   },
   getUserById: (req, res, next) => {
     const userId = req.params.userId;
+    if (!(typeof userId === "number")) {
+      const error = {
+        status: 400,
+        message: "userId must be a number",
+      };
+      next(error);
+      return;
+    }
     pool.query(
       `SELECT * FROM user WHERE id =${userId}`,
       (err, results, fields) => {
