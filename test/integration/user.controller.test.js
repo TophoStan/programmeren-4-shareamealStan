@@ -5,14 +5,11 @@ let database = [];
 
 chai.should();
 chai.use(chaiHttp);
+let insertedUserId = 0;
+let insertedTestUserId = 0;
 
 describe("UC-naam", () => {
   describe("UC-201 Registreren als nieuwe gebruiker", () => {
-    beforeEach((done) => {
-      database = [];
-      done();
-    });
-
     it("When a required input is missing, a valid error should be returned", (done) => {
       chai
         .request(server)
@@ -61,6 +58,11 @@ describe("UC-naam", () => {
           lastName: "Tophoven",
           emailAdress: "email",
           password: "",
+          isActive: 1,
+          phoneNumber: "01234567",
+          roles: "editor",
+          street: "street",
+          city: "stad",
         })
         .end((err, res) => {
           res.should.be.an("object");
@@ -76,8 +78,13 @@ describe("UC-naam", () => {
       const user = {
         firstName: "Test",
         lastName: "Tophoven",
-        emailAdress: "email",
+        emailAdress: "testmail2",
         password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "01234567",
+        roles: "editor",
+        street: "street",
+        city: "stad",
       };
       chai
         .request(server)
@@ -88,29 +95,181 @@ describe("UC-naam", () => {
           let { status, result } = res.body;
           status.should.equals(200);
           result.firstName.should.be.a("string").that.equals(user.firstName);
+          insertedUserId = result.userId;
           done();
         });
     });
     it("When a user already exists with the same email, a valid error should be returned", (done) => {
       const user = {
-        firstName: "test",
-        lastName: "doe",
-        emailAdress: "testdoe@mail.com",
+        firstName: "Test",
+        lastName: "Tophoven",
+        emailAdress: "testmail3",
         password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "01234567",
+        roles: "editor",
+        street: "street",
+        city: "stad",
       };
-      chai.request(server).post("/api/user").send(user).end();
       chai
         .request(server)
         .post("/api/user")
         .send(user)
         .end((err, res) => {
-          console.log(database);
+          insertedTestUserId = res.body.result.userId;
+        });
+      chai
+        .request(server)
+        .post("/api/user")
+        .send(user)
+        .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(409);
           result.should.be
             .a("string")
             .that.equals("User is niet toegevoegd in database");
+        });
+      chai
+        .request(server)
+        .delete(`/api/user/${insertedUserId + 1}`)
+        .end(() => {
+          done();
+        });
+    });
+  });
+  describe("UC-202 Overzicht van gebruikers", () => {});
+  describe("UC-203 Gebruikersprofiel opvragen", () => {});
+  describe("UC-204 Details van gebruiker", () => {
+    it("When a user whose id does not exists is requested, a valid error should be returned", (done) => {
+      chai
+        .request(server)
+        .get("/api/user/10000")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(404);
+          result.should.be
+            .a("string")
+            .that.equals("user with provided Id does not exist");
+          done();
+        });
+    });
+    it("When a user whose id does exist is requested, a valid response should be returned", (done) => {
+      chai
+        .request(server)
+        .get("/api/user/1")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result[0].id.should.equals(1);
+          done();
+        });
+    });
+  });
+  describe("UC-205 Gebruiker wijzigen", () => {
+    it("When a required field is missing, a valid error should be returned", (done) => {
+      const user = {
+        // firstName is missing
+        lastName: "Tophoven",
+        emailAdress: "testmail4",
+        password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "01234567",
+        roles: "editor",
+        street: "street",
+        city: "stad",
+      };
+      chai
+        .request(server)
+        .put("/api/user/1")
+        .send(user)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(400);
+          result.should.be
+            .a("string")
+            .that.equals("firstName must be a string");
+          done();
+        });
+    });
+    it("When a phoneNumber is invalid, a valid error should be returned", (done) => {
+      const user = {
+        firstName: "test",
+        lastName: "Tophoven",
+        emailAdress: "testmail4",
+        password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "",
+        roles: "editor",
+        street: "street",
+        city: "stad",
+      };
+      chai
+        .request(server)
+        .put("/api/user/1")
+        .send(user)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equal(400);
+          result.should.be
+            .a("string")
+            .that.equals("phonenumber must be atleast one character long");
+          done();
+        });
+    });
+    it("When a user with the provided id does not exist, a valid error should be returned", (done) => {
+      const user = {
+        firstName: "test",
+        lastName: "Tophoven",
+        emailAdress: "testmail4",
+        password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "29387420938",
+        roles: "editor",
+        street: "street",
+        city: "stad",
+      };
+      chai
+        .request(server)
+        .put("/api/user/100000")
+        .send(user)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equal(404);
+          result.should.be
+            .a("string")
+            .that.equals("User with provided id does not exist");
+          done();
+        });
+    });
+  });
+  describe("UC-206 Gebruiker verwijderen", () => {
+    it("When a user does not exist, a valid error should be returned", (done) => {
+      chai
+        .request(server)
+        .delete("/api/user/100000")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equal(404);
+          result.should.be.a("string").that.equals("User does not exist");
+          done();
+        });
+    });
+    it("When a user is succesfully deleted, a valid response should be returned", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/user/${insertedUserId}`)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equal(200);
+          result.should.be.a("string").that.equals("Succesful deletion");
           done();
         });
     });

@@ -10,7 +10,7 @@ router.get("/profile", userController.getUserProfile);
 
 router.get("/:userId", userController.getUserById);
 
-router.put("/:userId", userController.updateUser);
+router.put("/:userId", userController.validateUser, userController.updateUser);
 
 router.delete("/:userId", userController.deleteUser);
 

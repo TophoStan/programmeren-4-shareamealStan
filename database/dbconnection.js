@@ -20,6 +20,5 @@ pool.getConnection(function (err, connection) {
     // When done with the connection, release it.
     connection.release();
     if (error) throw error;
-    // console.log(results);
   });
 });
