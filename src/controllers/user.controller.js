@@ -61,6 +61,7 @@ let controller = {
       const error = {
         status: 400,
         result: err.message,
+        message: err.message,
       };
       next(error);
     }
