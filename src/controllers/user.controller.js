@@ -79,6 +79,7 @@ let controller = {
       user.street,
       user.city,
     ];
+
     pool.query(
       "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, roles, street, city) VALUES (?,?,?,?,?,?,?,?,?)",
       values,
@@ -115,35 +116,24 @@ let controller = {
   },
   getUserById: (req, res, next) => {
     const userId = req.params.userId;
-    if (!typeof userId === "number") {
-      const error = {
-        status: 400,
-        message: "userId must be a number",
-      };
-      next(error);
-      return;
-    } else {
-      pool.query(
-        `SELECT * FROM user WHERE id =${userId}`,
-        (err, results, fields) => {
-          if (err) throw err;
-          if (results.length > 0) {
-            res.status(200).json({
-              status: 200,
-              result: results,
-            });
-          } else {
-            const error = {
-              status: 404,
-              message: "user with provided Id does not exist",
-              result: "user with provided Id does not exist",
-            };
-
-            next(error);
-          }
+    pool.query(
+      `SELECT * FROM user WHERE id =${userId}`,
+      (err, results, fields) => {
+        if (err) {
+          const error = {
+            status: 404,
+            message: "user with provided Id does not exist",
+            result: "user with provided Id does not exist",
+          };
+          next(error);
+        } else if (results.length > 0) {
+          res.status(200).json({
+            status: 200,
+            result: results,
+          });
         }
-      );
-    }
+      }
+    );
   },
   getUserProfile: (req, res) => {
     res.status(200).json({
@@ -152,21 +142,19 @@ let controller = {
   },
   updateUser: (req, res, next) => {
     const userId = req.params.userId;
-    if (!typeof userId === "number") {
-      const error = {
-        status: 400,
-        message: "userId must be a number",
-      };
-      next(error);
-      return;
-    }
     const user = req.body;
     pool.query(
       `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
       (err, results) => {
         const { changedRows } = results;
-        if (err) throw err;
-        if (changedRows == 0) {
+        if (err) {
+          const error = {
+            status: 404,
+            message: "user with provided Id does not exist",
+            result: "user with provided Id does not exist",
+          };
+          next(error);
+        } else if (changedRows == 0) {
           res.status(404).json({
             status: 404,
             result: "User with provided id does not exist",
@@ -179,16 +167,16 @@ let controller = {
   },
   deleteUser: (req, res, next) => {
     const userId = req.params.userId;
-    if (typeof userId === "number") {
-      const error = {
-        status: 400,
-        message: "userId must be a number",
-      };
-      next(error);
-      return;
-    }
     pool.query(`DELETE FROM USER WHERE id=${userId}`, (err, results) => {
-      if (err) throw err;
+      if (err) {
+        const error = {
+          status: 404,
+          message: "user with provided Id does not exist",
+          result: "user with provided Id does not exist",
+        };
+        next(error);
+        return;
+      }
       const { affectedRows } = results;
       if (!affectedRows) {
         const error = {

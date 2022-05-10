@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 let insertedUserId = 0;
 let insertedTestUserId = 0;
 
-describe("UC-naam", () => {
+describe("UC-User", () => {
   describe("UC-201 Registreren als nieuwe gebruiker", () => {
     it("When a required input is missing, a valid error should be returned", (done) => {
       chai
