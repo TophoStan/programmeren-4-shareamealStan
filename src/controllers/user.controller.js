@@ -182,7 +182,7 @@ let controller = {
   },
   deleteUser: (req, res, next) => {
     const userId = req.params.userId;
-    pool.query(`DELETE FROM USER WHERE id=${userId}`, (err, results) => {
+    pool.query(`DELETE FROM user WHERE id=${userId}`, (err, results) => {
       if (err) throw err;
       const { affectedRows } = results;
       if (!affectedRows) {
