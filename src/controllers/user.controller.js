@@ -58,6 +58,7 @@ let controller = {
 
       next();
     } catch (err) {
+      console.log("User validation found invalid fields!");
       const error = {
         status: 400,
         result: err.message,
@@ -100,6 +101,7 @@ let controller = {
       values,
       (err, result) => {
         if (err) {
+          console.log("User has not been inserted!");
           const error = {
             status: 409,
             result: "User is niet toegevoegd in database",
