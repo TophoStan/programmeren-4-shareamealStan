@@ -122,27 +122,28 @@ let controller = {
       };
       next(error);
       return;
-    }
-    pool.query(
-      `SELECT * FROM user WHERE id =${userId}`,
-      (err, results, fields) => {
-        if (err) throw err;
-        if (results.length > 0) {
-          res.status(200).json({
-            status: 200,
-            result: results,
-          });
-        } else {
-          const error = {
-            status: 404,
-            message: "user with provided Id does not exist",
-            result: "user with provided Id does not exist",
-          };
+    } else {
+      pool.query(
+        `SELECT * FROM user WHERE id =${userId}`,
+        (err, results, fields) => {
+          if (err) throw err;
+          if (results.length > 0) {
+            res.status(200).json({
+              status: 200,
+              result: results,
+            });
+          } else {
+            const error = {
+              status: 404,
+              message: "user with provided Id does not exist",
+              result: "user with provided Id does not exist",
+            };
 
-          next(error);
+            next(error);
+          }
         }
-      }
-    );
+      );
+    }
   },
   getUserProfile: (req, res) => {
     res.status(200).json({

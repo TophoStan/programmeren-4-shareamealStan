@@ -15,7 +15,7 @@ describe("UC-naam", () => {
         .request(server)
         .post("/api/user")
         .send({
-          // firtName ontbreekt
+          // firstName ontbreekt
           lastName: "Tophoven",
           emailAdress: "mail",
         })
