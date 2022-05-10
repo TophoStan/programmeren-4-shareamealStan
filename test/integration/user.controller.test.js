@@ -151,7 +151,7 @@ describe("UC-User", () => {
           status.should.equals(404);
           result.should.be
             .a("string")
-            .that.equals("user with provided Id does not exist");
+            .that.equals("User with provided Id does not exist");
           done();
         });
     });

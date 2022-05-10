@@ -66,6 +66,21 @@ let controller = {
       next(error);
     }
   },
+  validateNumber: (req, res, next) => {
+    try {
+      assert(
+        Number.isInteger(parseInt(req.params.userId)),
+        "Id must be a number"
+      );
+      next();
+    } catch (err) {
+      const error = {
+        status: 400,
+        message: err.message,
+      };
+      next(error);
+    }
+  },
   addUser: (req, res, next) => {
     let user = req.body;
     const values = [
@@ -119,18 +134,19 @@ let controller = {
     pool.query(
       `SELECT * FROM user WHERE id =${userId}`,
       (err, results, fields) => {
-        if (err) {
-          const error = {
-            status: 404,
-            message: "user with provided Id does not exist",
-            result: "user with provided Id does not exist",
-          };
-          next(error);
-        } else if (results.length > 0) {
+        if (err) throw err;
+        if (results.length > 0) {
           res.status(200).json({
             status: 200,
             result: results,
           });
+        } else {
+          const error = {
+            status: 404,
+            message: "User with provided Id does not exist",
+            result: "User with provided Id does not exist",
+          };
+          next(error);
         }
       }
     );
@@ -147,18 +163,15 @@ let controller = {
       `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
       (err, results) => {
         const { changedRows } = results;
-        if (err) {
+        if (err) throw err;
+
+        if (changedRows == 0) {
           const error = {
             status: 404,
-            message: "user with provided Id does not exist",
-            result: "user with provided Id does not exist",
+            message: "User with provided id does not exist",
+            result: "User with provided id does not exist",
           };
           next(error);
-        } else if (changedRows == 0) {
-          res.status(404).json({
-            status: 404,
-            result: "User with provided id does not exist",
-          });
         } else {
           res.status(200).json({ status: 200, result: "Succusful update!" });
         }
@@ -168,15 +181,7 @@ let controller = {
   deleteUser: (req, res, next) => {
     const userId = req.params.userId;
     pool.query(`DELETE FROM USER WHERE id=${userId}`, (err, results) => {
-      if (err) {
-        const error = {
-          status: 404,
-          message: "user with provided Id does not exist",
-          result: "user with provided Id does not exist",
-        };
-        next(error);
-        return;
-      }
+      if (err) throw err;
       const { affectedRows } = results;
       if (!affectedRows) {
         const error = {
