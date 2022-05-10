@@ -78,7 +78,7 @@ describe("UC-naam", () => {
       const user = {
         firstName: "Test",
         lastName: "Tophoven",
-        emailAdress: "testmail2",
+        emailAdress: "testmail223",
         password: "wachtwoord",
         isActive: 1,
         phoneNumber: "01234567",
@@ -141,7 +141,7 @@ describe("UC-naam", () => {
   describe("UC-202 Overzicht van gebruikers", () => {});
   describe("UC-203 Gebruikersprofiel opvragen", () => {});
   describe("UC-204 Details van gebruiker", () => {
-    it("When a user whose id does not exists is requested, a valid error should be returned", (done) => {
+    it("When a user whose id does not exist is requested, a valid error should be returned", (done) => {
       chai
         .request(server)
         .get("/api/user/10000")

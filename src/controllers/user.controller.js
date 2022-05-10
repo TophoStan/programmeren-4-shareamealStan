@@ -115,7 +115,7 @@ let controller = {
   },
   getUserById: (req, res, next) => {
     const userId = req.params.userId;
-    if (!(typeof userId === "number")) {
+    if (!typeof userId === "number") {
       const error = {
         status: 400,
         message: "userId must be a number",
@@ -151,7 +151,7 @@ let controller = {
   },
   updateUser: (req, res, next) => {
     const userId = req.params.userId;
-    if (!(typeof userId === "number")) {
+    if (!typeof userId === "number") {
       const error = {
         status: 400,
         message: "userId must be a number",
@@ -178,7 +178,7 @@ let controller = {
   },
   deleteUser: (req, res, next) => {
     const userId = req.params.userId;
-    if (!(typeof userId === "number")) {
+    if (typeof userId === "number") {
       const error = {
         status: 400,
         message: "userId must be a number",
