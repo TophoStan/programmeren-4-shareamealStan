@@ -68,11 +68,9 @@ let controller = {
     }
   },
   validateNumber: (req, res, next) => {
+    const userId = req.params.userId;
     try {
-      assert(
-        Number.isInteger(parseInt(req.params.userId)),
-        "Id must be a number"
-      );
+      assert(Number.isInteger(parseInt(userId)), "Id must be a number");
       next();
     } catch (err) {
       const error = {
