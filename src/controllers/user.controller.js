@@ -64,7 +64,7 @@ let controller = {
     ];
 
     pool.query(
-      "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, roles, street, city) VALUES (?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city) VALUES (?,?,?,?,?,?,?,?)",
       values,
       (dbError, result) => {
         if (dbError) {
