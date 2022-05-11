@@ -46,7 +46,7 @@ let controller = {
         message: err.message,
       };
       console.log("Error during validation of id!");
-      console.log(error);
+      console.log(err);
       next(error);
     }
   },
