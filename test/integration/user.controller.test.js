@@ -55,7 +55,7 @@ describe("UC-User", () => {
           firstName: "Test",
           lastName: "Tophoven",
           emailAdress: "email",
-          password: "1234",
+          password: 1,
           isActive: "1",
           phoneNumber: "01234567",
           roles: "editor",
@@ -66,7 +66,7 @@ describe("UC-User", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("IsActive must be a number");
+          result.should.be.a("string").that.equals("Password must a string");
           done();
         });
     });

@@ -63,28 +63,24 @@ let controller = {
       user.city,
     ];
 
-    pool.query(
-      "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city) VALUES (?,?,?,?,?,?,?,?)",
-      values,
-      (dbError, result) => {
-        if (dbError) {
-          console.log(dbError.message);
-          const error = {
-            status: 409,
-            result: "User is niet toegevoegd in database",
-          };
-          next(error);
-        } else {
-          console.log(result.insertId);
-          user.userId = result.insertId;
-          res.status(201).json({
-            status: 201,
-            message: "User is toegevoegd in database",
-            result: user,
-          });
-        }
+    pool.query("INSERT INTO user SET ?", user, (dbError, result) => {
+      if (dbError) {
+        console.log(dbError.message);
+        const error = {
+          status: 409,
+          result: "User is niet toegevoegd in database",
+        };
+        next(error);
+      } else {
+        console.log(result.insertId);
+        user.userId = result.insertId;
+        res.status(201).json({
+          status: 201,
+          message: "User is toegevoegd in database",
+          result: user,
+        });
       }
-    );
+    });
   },
   getAllUsers: (req, res) => {
     let users = [];
