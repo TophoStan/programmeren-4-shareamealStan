@@ -6,25 +6,17 @@ router.post("/", userController.validateUser, userController.addUser);
 
 router.get("/", userController.getAllUsers);
 
-router.get(
-  "/:userId",
-  userController.validateNumber,
-  userController.getUserById
-);
+router.get("/:id", userController.validateNumber, userController.getUserById);
 
 router.get("/profile", userController.getUserProfile);
 
 router.put(
-  "/:userId",
+  "/:id",
   userController.validateNumber,
   userController.validateUser,
   userController.updateUser
 );
 
-router.delete(
-  "/:userId",
-  userController.validateNumber,
-  userController.deleteUser
-);
+router.delete("/:id", userController.validateNumber, userController.deleteUser);
 
 module.exports = router;

@@ -36,7 +36,7 @@ let controller = {
     }
   },
   validateNumber: (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     try {
       assert(Number.isInteger(parseInt(userId)), "Id must be a number");
       next();
@@ -45,13 +45,13 @@ let controller = {
         status: 400,
         message: err.message,
       };
-      console.log("Error during validation of id!");
-      console.log(err);
+
+      console.log(error);
       next(error);
     }
   },
   addUser: (req, res, next) => {
-    let user = req.body;
+    const user = req.body;
     const values = [
       user.firstName,
       user.lastName,
@@ -96,7 +96,7 @@ let controller = {
     });
   },
   getUserById: (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     pool.query(
       `SELECT * FROM user WHERE id =${userId}`,
       (err, results, fields) => {
@@ -123,7 +123,7 @@ let controller = {
     });
   },
   updateUser: (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     const user = req.body;
     pool.query(
       `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
@@ -145,7 +145,7 @@ let controller = {
     );
   },
   deleteUser: (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     pool.query(`DELETE FROM user WHERE id=${userId}`, (err, results) => {
       if (err) throw err;
       const { affectedRows } = results;
