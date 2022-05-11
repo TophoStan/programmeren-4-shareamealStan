@@ -187,7 +187,7 @@ let controller = {
       const { affectedRows } = results;
       if (!affectedRows) {
         const error = {
-          status: 404,
+          status: 400,
           result: "User does not exist",
         };
         next(error);
