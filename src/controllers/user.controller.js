@@ -49,10 +49,10 @@ let controller = {
         phoneNumber.length > 0,
         "phonenumber must be atleast one character long"
       );
-      assert(
-        roles.includes("editor" || "guest"),
-        "A user must have atleast one role"
-      );
+      // assert(
+      //   roles.includes("editor" || "guest"),
+      //   "A user must have atleast one role"
+      // );
       // assert(street.length > 0, "street must be atleast one character long");
       // assert(city.length > 0, "City must be atleast one character long");
 
