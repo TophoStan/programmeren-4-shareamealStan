@@ -58,7 +58,7 @@ let controller = {
 
       next();
     } catch (err) {
-      console.log("User validation found invalid fields!");
+      console.log(err.message);
       const error = {
         status: 400,
         result: err.message,
