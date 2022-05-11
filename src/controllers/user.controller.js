@@ -23,9 +23,9 @@ let controller = {
       assert(typeof lastName === "string", "lastName must be a string");
       assert(typeof emailAdress === "string", "emailAdress must be a string");
       assert(typeof password === "string", "password must be a string");
-      //assert(typeof isActive === "number", "isActive must be a number");
+      // assert(typeof isActive === "boolean", "isActive must be a number");
       assert(typeof phoneNumber === "string", "phonenumber must a string");
-      assert(typeof roles === "string", "roles must be a string");
+      //assert(typeof roles === "string", "roles must be a string");
       assert(typeof street === "string", "steet must be a string");
       assert(typeof city === "string", "city must be a string");
       assert(
