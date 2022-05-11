@@ -10,7 +10,7 @@ let insertedTestUserId = 0;
 
 describe("UC-User", () => {
   describe("UC-201 Registreren als nieuwe gebruiker", () => {
-    it("When a required input is missing, a valid error should be returned", (done) => {
+    it("TC-201-1 When a required input is missing, a valid error should be returned", (done) => {
       chai
         .request(server)
         .post("/api/user")
@@ -74,32 +74,7 @@ describe("UC-User", () => {
           done();
         });
     });
-    it("When a user is succesfully added, a valid response should be returned", (done) => {
-      const user = {
-        firstName: "Test",
-        lastName: "Tophoven",
-        emailAdress: "testmail223",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "01234567",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .post("/api/user")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equals(200);
-          result.firstName.should.be.a("string").that.equals(user.firstName);
-          insertedUserId = result.userId;
-          done();
-        });
-    });
-    it("When a user already exists with the same email, a valid error should be returned", (done) => {
+    it("TC-201-4 When a user already exists with the same email, a valid error should be returned", (done) => {
       const user = {
         firstName: "Test",
         lastName: "Tophoven",
@@ -137,11 +112,36 @@ describe("UC-User", () => {
           done();
         });
     });
+    it("TC-201-5 When a user is succesfully added, a valid response should be returned", (done) => {
+      const user = {
+        firstName: "Test",
+        lastName: "Tophoven",
+        emailAdress: "testmail223",
+        password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "01234567",
+        roles: "editor",
+        street: "street",
+        city: "stad",
+      };
+      chai
+        .request(server)
+        .post("/api/user")
+        .send(user)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.firstName.should.be.a("string").that.equals(user.firstName);
+          insertedUserId = result.userId;
+          done();
+        });
+    });
   });
   describe("UC-202 Overzicht van gebruikers", () => {});
   describe("UC-203 Gebruikersprofiel opvragen", () => {});
   describe("UC-204 Details van gebruiker", () => {
-    it("When a user whose id does not exist is requested, a valid error should be returned", (done) => {
+    it("TC-204-2 When a user whose id does not exist is requested, a valid error should be returned", (done) => {
       chai
         .request(server)
         .get("/api/user/10000")
@@ -155,21 +155,21 @@ describe("UC-User", () => {
           done();
         });
     });
-    it("When a user whose id does exist is requested, a valid response should be returned", (done) => {
+    it("TC-204-3 When a user whose id does exist is requested, a valid response should be returned", (done) => {
       chai
         .request(server)
-        .get("/api/user/1")
+        .get("/api/user/3")
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(200);
-          result[0].id.should.equals(1);
+          result[0].id.should.equals(3);
           done();
         });
     });
   });
   describe("UC-205 Gebruiker wijzigen", () => {
-    it("When a required field is missing, a valid error should be returned", (done) => {
+    it("TC-205-1 When a required field is missing, a valid error should be returned", (done) => {
       const user = {
         // firstName is missing
         lastName: "Tophoven",
@@ -221,7 +221,7 @@ describe("UC-User", () => {
           done();
         });
     });
-    it("When a user with the provided id does not exist, a valid error should be returned", (done) => {
+    it("TC-205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
       const user = {
         firstName: "test",
         lastName: "Tophoven",
@@ -247,25 +247,50 @@ describe("UC-User", () => {
           done();
         });
     });
+    // it("TC-205-6 When a user is succesfully updated, a valid response should be returned", (done) => {
+    //   const user = {
+    //     firstName: "test",
+    //     lastName: "Tophoven",
+    //     emailAdress: "testmail12345",
+    //     password: "wachtwoord",
+    //     isActive: 1,
+    //     phoneNumber: "123456789",
+    //     roles: "editor",
+    //     street: "street",
+    //     city: "stad",
+    //   };
+    //   chai
+    //     .request(server)
+    //     .put("/api/user/1")
+    //     .send(user)
+    //     .end((err, res) => {
+    //       res.should.be.an("object");
+    //       let { status, result } = res.body;
+    //       status.should.equal(200);
+    //       result.should.be.a("string").that.equals("Succusful update!");
+    //       done();
+    //     });
+    // });
   });
   describe("UC-206 Gebruiker verwijderen", () => {
-    it("When a user does not exist, a valid error should be returned", (done) => {
+    it("TC-206-1 When a user does not exist, a valid error should be returned", (done) => {
       chai
         .request(server)
         .delete("/api/user/100000")
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
-          status.should.equal(404);
+          status.should.equal(400);
           result.should.be.a("string").that.equals("User does not exist");
           done();
         });
     });
-    it("When a user is succesfully deleted, a valid response should be returned", (done) => {
+    it("TC-206-4 When a user is succesfully deleted, a valid response should be returned", (done) => {
       chai
         .request(server)
         .delete(`/api/user/${insertedUserId}`)
         .end((err, res) => {
+          console.log(insertedTestUserId);
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equal(200);
