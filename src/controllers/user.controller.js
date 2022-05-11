@@ -10,13 +10,12 @@ let controller = {
     let {
       firstName,
       lastName,
-      emailAdress,
-      password,
-      isActive,
-      phoneNumber,
-      roles,
       street,
       city,
+      isActive,
+      emailAdress,
+      phoneNumber,
+      password,
     } = user;
     try {
       assert(typeof firstName === "string", "Firstname must be a string");
