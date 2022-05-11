@@ -44,7 +44,7 @@ let controller = {
         password.length > 0,
         "password must be atleast one character long"
       );
-      assert(isActive == "1" || isActive == "0", "isActive must be a 0 or 1");
+      assert(isActive == 0 || isActive == 1, "isActive must be a 0 or 1");
       assert(
         phoneNumber.length > 0,
         "phonenumber must be atleast one character long"
