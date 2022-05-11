@@ -26,8 +26,8 @@ let controller = {
       // assert(typeof isActive === "boolean", "isActive must be a number");
       assert(typeof phoneNumber === "string", "phonenumber must a string");
       //assert(typeof roles === "string", "roles must be a string");
-      assert(typeof street === "string", "steet must be a string");
-      assert(typeof city === "string", "city must be a string");
+      // assert(typeof street === "string", "street must be a string");
+      // assert(typeof city === "string", "city must be a string");
       assert(
         firstName.length > 0,
         "firstName must be atleast one character long"
@@ -53,8 +53,8 @@ let controller = {
         roles.includes("editor" || "guest"),
         "A user must have atleast one role"
       );
-      assert(street.length > 0, "street must be atleast one character long");
-      assert(city.length > 0, "City must be atleast one character long");
+      // assert(street.length > 0, "street must be atleast one character long");
+      // assert(city.length > 0, "City must be atleast one character long");
 
       next();
     } catch (err) {
