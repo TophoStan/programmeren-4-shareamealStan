@@ -69,6 +69,7 @@ let controller = {
         console.log(dbError.message);
         const error = {
           status: 409,
+          message: "User has not been added",
           result: "User is niet toegevoegd in database",
         };
         next(error);
@@ -101,7 +102,8 @@ let controller = {
       `SELECT * FROM user WHERE id =${userId}`,
       (err, results, fields) => {
         if (err) throw err;
-        if (results.length > 0) {
+
+        if (results[0]) {
           res.status(200).json({
             status: 200,
             result: results,
@@ -110,7 +112,6 @@ let controller = {
           const error = {
             status: 404,
             message: "User with provided Id does not exist",
-            result: "User with provided Id does not exist",
           };
           next(error);
         }

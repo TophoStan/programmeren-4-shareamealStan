@@ -21,9 +21,9 @@ describe("UC-User", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(400);
-          result.should.be
+          message.should.be
             .a("string")
             .that.equals("Firstname must be a string");
 
@@ -41,9 +41,9 @@ describe("UC-User", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("Street must be a string");
+          message.should.be.a("string").that.equals("Street must be a string");
           done();
         });
     });
@@ -64,9 +64,9 @@ describe("UC-User", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("Password must a string");
+          message.should.be.a("string").that.equals("Password must a string");
           done();
         });
     });
@@ -138,9 +138,9 @@ describe("UC-User", () => {
         .get("/api/user/10000")
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(404);
-          result.should.be
+          message.should.be
             .a("string")
             .that.equals("User with provided Id does not exist");
           done();
