@@ -79,6 +79,7 @@ let controller = {
         status: 400,
         message: err.message,
       };
+      console.log(error);
       next(error);
     }
   },

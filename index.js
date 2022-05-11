@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.all("*", (req, res, next) => {
   const method = req.method;
-  console.log(`Method ${method} is aangeroepen`);
+  console.log(`Method ${method} is aangeroepen op URL:${req.url}`);
   next();
 });
 
