@@ -1,9 +1,6 @@
 const assert = require("assert");
 const pool = require("../../database/dbconnection");
 
-let database = [];
-let id = 0;
-
 let controller = {
   validateUser: (req, res, next) => {
     let user = req.body;
@@ -69,9 +66,9 @@ let controller = {
     pool.query(
       "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, roles, street, city) VALUES (?,?,?,?,?,?,?,?,?)",
       values,
-      (err, result) => {
-        if (err) {
-          console.log("User has not been inserted!");
+      (dbError, result) => {
+        if (dbError) {
+          console.log(dbError.message);
           const error = {
             status: 409,
             result: "User is niet toegevoegd in database",
