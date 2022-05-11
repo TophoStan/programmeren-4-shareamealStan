@@ -37,6 +37,7 @@ let controller = {
   },
   validateNumber: (req, res, next) => {
     const userId = req.params.id;
+    console.log(`The id in the url: ${userId}`);
     try {
       assert(Number.isInteger(parseInt(userId)), "Id must be a number");
       next();
@@ -46,24 +47,12 @@ let controller = {
         message: err.message,
       };
 
-      console.log(error);
+      console.log(err);
       next(error);
     }
   },
   addUser: (req, res, next) => {
     const user = req.body;
-    const values = [
-      user.firstName,
-      user.lastName,
-      user.isActive,
-      user.emailAdress,
-      user.password,
-      user.phoneNumber,
-      user.roles,
-      user.street,
-      user.city,
-    ];
-
     pool.query("INSERT INTO user SET ?", user, (dbError, result) => {
       if (dbError) {
         console.log(dbError.message);
