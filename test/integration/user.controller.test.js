@@ -100,11 +100,6 @@ describe("UC-User", () => {
           result.should.be
             .a("string")
             .that.equals("User is niet toegevoegd in database");
-        });
-      chai
-        .request(server)
-        .delete(`/api/user/${insertedUserId + 1}`)
-        .end(() => {
           done();
         });
     });
