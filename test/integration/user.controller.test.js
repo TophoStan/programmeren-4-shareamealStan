@@ -112,7 +112,7 @@ describe("UC-User", () => {
       const user = {
         firstName: "Test",
         lastName: "Tophoven",
-        emailAdress: "testmail223",
+        emailAdress: "testmail1233",
         password: "wachtwoord",
         isActive: 1,
         phoneNumber: "01234567",
