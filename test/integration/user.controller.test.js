@@ -25,7 +25,7 @@ describe("UC-User", () => {
           status.should.equals(400);
           result.should.be
             .a("string")
-            .that.equals("firstName must be a string");
+            .that.equals("Firstname must be a string");
 
           done();
         });
@@ -37,15 +37,13 @@ describe("UC-User", () => {
         .send({
           firstName: "Test",
           lastName: "Tophoven",
-          emailAdress: 1,
+          emailAdress: "test",
         })
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be
-            .a("string")
-            .that.equals("emailAdress must be a string");
+          result.should.be.a("string").that.equals("Street must be a string");
           done();
         });
     });
@@ -57,8 +55,8 @@ describe("UC-User", () => {
           firstName: "Test",
           lastName: "Tophoven",
           emailAdress: "email",
-          password: "",
-          isActive: 1,
+          password: "1234",
+          isActive: "1",
           phoneNumber: "01234567",
           roles: "editor",
           street: "street",
@@ -68,9 +66,7 @@ describe("UC-User", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be
-            .a("string")
-            .that.equals("password must be atleast one character long");
+          result.should.be.a("string").that.equals("IsActive must be a number");
           done();
         });
     });
@@ -191,33 +187,7 @@ describe("UC-User", () => {
           status.should.equals(400);
           result.should.be
             .a("string")
-            .that.equals("firstName must be a string");
-          done();
-        });
-    });
-    it("When a phoneNumber is invalid, a valid error should be returned", (done) => {
-      const user = {
-        firstName: "test",
-        lastName: "Tophoven",
-        emailAdress: "testmail4",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .put("/api/user/1")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equal(400);
-          result.should.be
-            .a("string")
-            .that.equals("phonenumber must be atleast one character long");
+            .that.equals("Firstname must be a string");
           done();
         });
     });
@@ -286,9 +256,10 @@ describe("UC-User", () => {
         });
     });
     it("TC-206-4 When a user is succesfully deleted, a valid response should be returned", (done) => {
+      chai.request(server).delete(`/api/user/${insertedUserId}`).end();
       chai
         .request(server)
-        .delete(`/api/user/${insertedUserId}`)
+        .delete(`/api/user/${insertedTestUserId}`)
         .end((err, res) => {
           console.log(insertedTestUserId);
           res.should.be.an("object");
