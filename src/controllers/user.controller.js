@@ -23,7 +23,7 @@ let controller = {
       assert(typeof lastName === "string", "lastName must be a string");
       assert(typeof emailAdress === "string", "emailAdress must be a string");
       assert(typeof password === "string", "password must be a string");
-      assert(typeof isActive === "number", "isActive must be either 0 or 1");
+      assert(typeof isActive === "string", "isActive must be either 0 or 1");
       assert(typeof phoneNumber === "string", "phonenumber must a string");
       assert(typeof roles === "string", "roles must be a string");
       assert(typeof street === "string", "steet must be a string");
@@ -44,7 +44,7 @@ let controller = {
         password.length > 0,
         "password must be atleast one character long"
       );
-      assert(isActive == 1 || isActive == 0, "isActive must be a 0 or 1");
+      assert(isActive == "1" || isActive == "0", "isActive must be a 0 or 1");
       assert(
         phoneNumber.length > 0,
         "phonenumber must be atleast one character long"
@@ -164,10 +164,10 @@ let controller = {
     pool.query(
       `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
       (err, results) => {
-        const { changedRows } = results;
+        const { affectedRows } = results;
         if (err) throw err;
 
-        if (changedRows == 0) {
+        if (affectedRows == 0) {
           const error = {
             status: 404,
             message: "User with provided id does not exist",
