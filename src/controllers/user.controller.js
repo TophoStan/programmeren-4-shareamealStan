@@ -19,42 +19,14 @@ let controller = {
       city,
     } = user;
     try {
-      assert(typeof firstName === "string", "firstName must be a string");
-      assert(typeof lastName === "string", "lastName must be a string");
-      assert(typeof emailAdress === "string", "emailAdress must be a string");
-      assert(typeof password === "string", "password must be a string");
-      // assert(typeof isActive === "boolean", "isActive must be a number");
-      assert(typeof phoneNumber === "string", "phonenumber must a string");
-      //assert(typeof roles === "string", "roles must be a string");
-      // assert(typeof street === "string", "street must be a string");
-      // assert(typeof city === "string", "city must be a string");
-      assert(
-        firstName.length > 0,
-        "firstName must be atleast one character long"
-      );
-      assert(
-        lastName.length > 0,
-        "lastName must be atleast one character long"
-      );
-      assert(
-        emailAdress.length > 0,
-        "emailAdress must be atleast one character long"
-      );
-      assert(
-        password.length > 0,
-        "password must be atleast one character long"
-      );
-      assert(isActive == 0 || isActive == 1, "isActive must be a 0 or 1");
-      assert(
-        phoneNumber.length > 0,
-        "phonenumber must be atleast one character long"
-      );
-      // assert(
-      //   roles.includes("editor" || "guest"),
-      //   "A user must have atleast one role"
-      // );
-      // assert(street.length > 0, "street must be atleast one character long");
-      // assert(city.length > 0, "City must be atleast one character long");
+      assert(typeof firstName === "string", "Firstname must be a string");
+      assert(typeof lastName === "string", "LastName must be a string");
+      assert(typeof street === "string", "Street must be a string");
+      assert(typeof city === "string", "City must be a string");
+      assert(typeof isActive === "boolean", "IsActive must be a boolean");
+      assert(typeof emailAdress === "string", "EmailAddress must be a string");
+      assert(typeof phoneNumber === "string", "PhoneNumber must be a string");
+      assert(typeof password === "string", "Password must a string");
 
       next();
     } catch (err) {
