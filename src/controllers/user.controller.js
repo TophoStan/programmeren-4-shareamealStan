@@ -22,7 +22,7 @@ let controller = {
       assert(typeof lastName === "string", "LastName must be a string");
       assert(typeof street === "string", "Street must be a string");
       assert(typeof city === "string", "City must be a string");
-      assert(typeof isActive === "number", "IsActive must be a number");
+      // assert(typeof isActive === "number", "IsActive must be a number");
       assert(typeof emailAdress === "string", "EmailAddress must be a string");
       assert(typeof phoneNumber === "string", "PhoneNumber must be a string");
       assert(typeof password === "string", "Password must a string");
