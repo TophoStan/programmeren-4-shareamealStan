@@ -41,7 +41,7 @@ let controller = {
       assert(Number.isInteger(parseInt(userId)), "Id must be a number");
       next();
     } catch (err) {
-      console.log(req);
+      console.log(req.body);
       const error = {
         status: 400,
         message: err.message,
