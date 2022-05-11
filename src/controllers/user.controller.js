@@ -35,19 +35,19 @@ let controller = {
       next(error);
     }
   },
-  validateNumber: (req, res, next) => {
+  validateId: (req, res, next) => {
     const userId = req.params.id;
-    console.log(`The id in the url: ${userId}`);
     try {
       assert(Number.isInteger(parseInt(userId)), "Id must be a number");
       next();
     } catch (err) {
+      console.log(req);
       const error = {
         status: 400,
         message: err.message,
       };
 
-      console.log(err);
+      console.log(error);
       next(error);
     }
   },
