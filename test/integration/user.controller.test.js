@@ -131,7 +131,7 @@ describe("UC-User", () => {
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
-          status.should.equals(200);
+          status.should.equals(201);
           result.firstName.should.be.a("string").that.equals(user.firstName);
           insertedUserId = result.userId;
           done();
@@ -247,30 +247,30 @@ describe("UC-User", () => {
           done();
         });
     });
-    // it("TC-205-6 When a user is succesfully updated, a valid response should be returned", (done) => {
-    //   const user = {
-    //     firstName: "test",
-    //     lastName: "Tophoven",
-    //     emailAdress: "testmail12345",
-    //     password: "wachtwoord",
-    //     isActive: 1,
-    //     phoneNumber: "123456789",
-    //     roles: "editor",
-    //     street: "street",
-    //     city: "stad",
-    //   };
-    //   chai
-    //     .request(server)
-    //     .put("/api/user/1")
-    //     .send(user)
-    //     .end((err, res) => {
-    //       res.should.be.an("object");
-    //       let { status, result } = res.body;
-    //       status.should.equal(200);
-    //       result.should.be.a("string").that.equals("Succusful update!");
-    //       done();
-    //     });
-    // });
+    it("TC-205-6 When a user is succesfully updated, a valid response should be returned", (done) => {
+      const user = {
+        firstName: "test",
+        lastName: "Tophoven",
+        emailAdress: "testmail12345",
+        password: "wachtwoord",
+        isActive: 1,
+        phoneNumber: "123456789",
+        roles: "editor",
+        street: "street",
+        city: "stad",
+      };
+      chai
+        .request(server)
+        .put("/api/user/3")
+        .send(user)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equal(200);
+          result.should.be.a("string").that.equals("Succusful update!");
+          done();
+        });
+    });
   });
   describe("UC-206 Gebruiker verwijderen", () => {
     it("TC-206-1 When a user does not exist, a valid error should be returned", (done) => {

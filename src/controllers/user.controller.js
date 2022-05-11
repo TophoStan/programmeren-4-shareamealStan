@@ -110,8 +110,8 @@ let controller = {
         } else {
           console.log(result.insertId);
           user.userId = result.insertId;
-          res.status(200).json({
-            status: 200,
+          res.status(201).json({
+            status: 201,
             message: "User is toegevoegd in database",
             result: user,
           });
