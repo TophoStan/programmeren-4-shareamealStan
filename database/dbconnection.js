@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const mysql = require("mysql2");
 const pool = mysql.createPool({
+  multipleStatements: true,
   connectionLimit: 10,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,

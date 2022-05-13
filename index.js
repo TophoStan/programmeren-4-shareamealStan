@@ -21,8 +21,10 @@ app.get("/", (req, res) => {
 
 const userRoute = require("./src/routes/User");
 const mealRoute = require("./src/routes/Meal");
+const authRoute = require("./src/routes/Auth");
 app.use("/api/user", userRoute);
 app.use("/api/meal", mealRoute);
+app.use("/api/auth", authRoute);
 
 app.all("*", (req, res) => {
   res.status(404).json({

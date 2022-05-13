@@ -74,15 +74,41 @@ let controller = {
     });
   },
   getAllUsers: (req, res) => {
+    const { firstName, lastName } = req.query;
+    console.log(req.query);
+
+    let queryString = "SELECT * FROM user ";
+    if (firstName || lastName) {
+      queryString += "WHERE ";
+      if (firstName) {
+        queryString += `firstName = '${firstName}'`;
+      }
+
+      if (firstName && lastName) {
+        queryString += ` AND `;
+      }
+
+      if (lastName) {
+        queryString += `lastName = '${lastName}'`;
+      }
+    }
+    console.log(queryString);
     let users = [];
-    pool.query("SELECT * FROM user", (error, results, fields) => {
-      results.forEach((user) => {
-        users.push(user);
-      });
-      res.status(200).json({
-        status: 200,
-        result: users,
-      });
+    pool.query(queryString, (error, results, fields) => {
+      if (!results) {
+        res.status(204).json({
+          status: 204,
+          message: "No users found with the provided paramaters",
+        });
+      } else {
+        results.forEach((user) => {
+          users.push(user);
+        });
+        res.status(200).json({
+          status: 200,
+          result: users,
+        });
+      }
     });
   },
   getUserById: (req, res, next) => {
