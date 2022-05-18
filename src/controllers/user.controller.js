@@ -116,6 +116,7 @@ let controller = {
         status: 200,
         result: users,
       });
+
     });
   },
   getUserById: (req, res, next) => {
