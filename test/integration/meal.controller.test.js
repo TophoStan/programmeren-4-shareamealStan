@@ -297,6 +297,11 @@ describe("UC meals", () => {
     });
   });
   describe("UC-305 Maaltijd verwijderen", () => {
+    afterEach((done) => {
+      pool.query(CLEAR_DB, (err, result, fields) => {
+        done();
+      });
+    });
     it("TC-305-2 Niet ingelogd", (done) => {
       chai
         .request(server)
