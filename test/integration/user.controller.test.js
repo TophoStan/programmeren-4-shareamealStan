@@ -2,37 +2,37 @@ process.env.DB_DATABASE = process.env.DB_DATABASE || "shareamealtestdb";
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const server = require("../../index");
-const dbconnection = require("../../database/dbconnection");
+const pool = require("../../src/database/dbconnection");
 let database = [];
+
+//Clear database sql
+const CLEAR_MEAL_TABLE = "DELETE IGNORE FROM `meal`;";
+const CLEAR_PARTICIPANTS_TABLE = "DELETE IGNORE FROM `meal_participants_user`;";
+const CLEAR_USERS_TABLE = "DELETE IGNORE FROM `user`;";
+const CLEAR_DB =
+  CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE;
+
+const INSERT_USER_1 =
+  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" +
+  '(1, "first", "last", "d.ambesi@avans.nl", "secret", "street", "city");';
+
+const INSERT_USER_2 =
+  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" +
+  '(2, "test", "test", "test@server.com", "test", "test", "test");';
 
 chai.should();
 chai.use(chaiHttp);
 let insertedUserId = 0;
 let insertedTestUserId = 0;
 
-describe("UC-User", () => {
+describe("TC-User", () => {
   describe("UC-201 Registreren als nieuwe gebruiker", () => {
-    it("TC-201-1 When a required input is missing, a valid error should be returned", (done) => {
-      chai
-        .request(server)
-        .post("/api/user")
-        .send({
-          // firstName ontbreekt
-          lastName: "Tophoven",
-          emailAdress: "mail",
-        })
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, message } = res.body;
-          status.should.equals(400);
-          message.should.be
-            .a("string")
-            .that.equals("Firstname must be a string");
-
-          done();
-        });
+    beforeEach((done) => {
+      pool.query(CLEAR_DB, (err, result, fields) => {
+        done();
+      });
     });
-    it("When an emailAdress is not valid, a valid error should be returned", (done) => {
+    it("TC-201-1 When a required input is missing, a valid error should be returned", (done) => {
       chai
         .request(server)
         .post("/api/user")
@@ -49,20 +49,41 @@ describe("UC-User", () => {
           done();
         });
     });
-    it("When a password is not valid, a valid error should be returned", (done) => {
+    it("TC-201-2 When a emailadress is not valid, a valid error should be returned", (done) => {
       chai
         .request(server)
         .post("/api/user")
         .send({
           firstName: "Test",
           lastName: "Tophoven",
-          emailAdress: "email",
-          password: 1,
-          isActive: "1",
-          phoneNumber: "01234567",
-          roles: "editor",
+          //Will be checked!
+          emailAdress: "nietvalidemail",
           street: "street",
-          city: "stad",
+          city: "city",
+          phoneNumber: "123456789",
+          password: "wachtwoord",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(400);
+          message.should.be.a("string").that.equals("EmailAdress is not valid");
+          done();
+        });
+    });
+    it("TC-201-3 When a password is not valid, a valid error should be returned", (done) => {
+      chai
+        .request(server)
+        .post("/api/user")
+        .send({
+          firstName: "Test",
+          lastName: "Tophoven",
+          emailAdress: "nietvalidemail",
+          street: "street",
+          city: "city",
+          phoneNumber: "123456789",
+          //Will be checked!
+          password: 123,
         })
         .end((err, res) => {
           res.should.be.an("object");
@@ -73,43 +94,36 @@ describe("UC-User", () => {
         });
     });
     it("TC-201-4 When a user already exists with the same email, a valid error should be returned", (done) => {
-      const user = {
-        firstName: "Test",
-        lastName: "Tophoven",
-        emailAdress: "testmail3",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "01234567",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .post("/api/user")
-        .send(user)
-        .end((err, res) => {
-          insertedTestUserId = res.body.result.userId;
-        });
-      chai
-        .request(server)
-        .post("/api/user")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equals(409);
-          result.should.be
-            .a("string")
-            .that.equals("User is niet toegevoegd in database");
-          done();
-        });
+      pool.query(INSERT_USER_1, (err, result, fields) => {
+        chai
+          .request(server)
+          .post("/api/user")
+          .send({
+            firstName: "Test",
+            lastName: "Tophoven",
+            emailAdress: "d.ambesi@avans.nl",
+            street: "street",
+            city: "city",
+            phoneNumber: "123456789",
+            //Will be checked!
+            password: "123coolwachtwoord",
+          })
+          .end((err, res) => {
+            res.should.be.an("object");
+            let { status, message } = res.body;
+            status.should.equals(409);
+            message.should.be
+              .a("string")
+              .that.equals("User has not been added");
+            done();
+          });
+      });
     });
     it("TC-201-5 When a user is succesfully added, a valid response should be returned", (done) => {
       const user = {
         firstName: "Test",
         lastName: "Tophoven",
-        emailAdress: "testmail1233",
+        emailAdress: "test@mail.com",
         password: "wachtwoord",
         isActive: 1,
         phoneNumber: "01234567",
@@ -131,140 +145,140 @@ describe("UC-User", () => {
         });
     });
   });
-  describe("UC-202 Overzicht van gebruikers", () => {});
-  describe("UC-203 Gebruikersprofiel opvragen", () => {});
-  describe("UC-204 Details van gebruiker", () => {
-    it("TC-204-2 When a user whose id does not exist is requested, a valid error should be returned", (done) => {
-      chai
-        .request(server)
-        .get("/api/user/10000")
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, message } = res.body;
-          status.should.equals(404);
-          message.should.be
-            .a("string")
-            .that.equals("User with provided Id does not exist");
-          done();
-        });
-    });
-    it("TC-204-3 When a user whose id does exist is requested, a valid response should be returned", (done) => {
-      chai
-        .request(server)
-        .get("/api/user/3")
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equals(200);
-          result[0].id.should.equals(3);
-          done();
-        });
-    });
-  });
-  describe("UC-205 Gebruiker wijzigen", () => {
-    it("TC-205-1 When a required field is missing, a valid error should be returned", (done) => {
-      const user = {
-        // firstName is missing
-        lastName: "Tophoven",
-        emailAdress: "testmail4",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "01234567",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .put("/api/user/1")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equals(400);
-          result.should.be
-            .a("string")
-            .that.equals("Firstname must be a string");
-          done();
-        });
-    });
-    it("TC-205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
-      const user = {
-        firstName: "test",
-        lastName: "Tophoven",
-        emailAdress: "testmail4",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "29387420938",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .put("/api/user/100000")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equal(404);
-          result.should.be
-            .a("string")
-            .that.equals("User with provided id does not exist");
-          done();
-        });
-    });
-    it("TC-205-6 When a user is succesfully updated, a valid response should be returned", (done) => {
-      const user = {
-        firstName: "test",
-        lastName: "Tophoven",
-        emailAdress: "testmail12345",
-        password: "wachtwoord",
-        isActive: 1,
-        phoneNumber: "123456789",
-        roles: "editor",
-        street: "street",
-        city: "stad",
-      };
-      chai
-        .request(server)
-        .put("/api/user/4")
-        .send(user)
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equal(200);
-          result.should.be.a("string").that.equals("Succusful update!");
-          done();
-        });
-    });
-  });
-  describe("UC-206 Gebruiker verwijderen", () => {
-    it("TC-206-1 When a user does not exist, a valid error should be returned", (done) => {
-      chai
-        .request(server)
-        .delete("/api/user/100000")
-        .end((err, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equal(400);
-          result.should.be.a("string").that.equals("User does not exist");
-          done();
-        });
-    });
-    it("TC-206-4 When a user is succesfully deleted, a valid response should be returned", (done) => {
-      chai.request(server).delete(`/api/user/${insertedUserId}`).end();
-      chai
-        .request(server)
-        .delete(`/api/user/${insertedTestUserId}`)
-        .end((err, res) => {
-          console.log(insertedTestUserId);
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equal(200);
-          result.should.be.a("string").that.equals("Succesful deletion");
-          done();
-        });
-    });
-  });
+  // describe("UC-202 Overzicht van gebruikers", () => {});
+  // describe("UC-203 Gebruikersprofiel opvragen", () => {});
+  // describe("UC-204 Details van gebruiker", () => {
+  //   it("TC-204-2 When a user whose id does not exist is requested, a valid error should be returned", (done) => {
+  //     chai
+  //       .request(server)
+  //       .get("/api/user/10000")
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, message } = res.body;
+  //         status.should.equals(404);
+  //         message.should.be
+  //           .a("string")
+  //           .that.equals("User with provided Id does not exist");
+  //         done();
+  //       });
+  //   });
+  //   it("TC-204-3 When a user whose id does exist is requested, a valid response should be returned", (done) => {
+  //     chai
+  //       .request(server)
+  //       .get("/api/user/3")
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equals(200);
+  //         result[0].id.should.equals(3);
+  //         done();
+  //       });
+  //   });
+  // });
+  // describe("UC-205 Gebruiker wijzigen", () => {
+  //   it("TC-205-1 When a required field is missing, a valid error should be returned", (done) => {
+  //     const user = {
+  //       // firstName is missing
+  //       lastName: "Tophoven",
+  //       emailAdress: "testmail4",
+  //       password: "wachtwoord",
+  //       isActive: 1,
+  //       phoneNumber: "01234567",
+  //       roles: "editor",
+  //       street: "street",
+  //       city: "stad",
+  //     };
+  //     chai
+  //       .request(server)
+  //       .put("/api/user/1")
+  //       .send(user)
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equals(400);
+  //         result.should.be
+  //           .a("string")
+  //           .that.equals("Firstname must be a string");
+  //         done();
+  //       });
+  //   });
+  //   it("TC-205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
+  //     const user = {
+  //       firstName: "test",
+  //       lastName: "Tophoven",
+  //       emailAdress: "testmail4",
+  //       password: "wachtwoord",
+  //       isActive: 1,
+  //       phoneNumber: "29387420938",
+  //       roles: "editor",
+  //       street: "street",
+  //       city: "stad",
+  //     };
+  //     chai
+  //       .request(server)
+  //       .put("/api/user/100000")
+  //       .send(user)
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equal(404);
+  //         result.should.be
+  //           .a("string")
+  //           .that.equals("User with provided id does not exist");
+  //         done();
+  //       });
+  //   });
+  //   it("TC-205-6 When a user is succesfully updated, a valid response should be returned", (done) => {
+  //     const user = {
+  //       firstName: "test",
+  //       lastName: "Tophoven",
+  //       emailAdress: "testmail12345",
+  //       password: "wachtwoord",
+  //       isActive: 1,
+  //       phoneNumber: "123456789",
+  //       roles: "editor",
+  //       street: "street",
+  //       city: "stad",
+  //     };
+  //     chai
+  //       .request(server)
+  //       .put("/api/user/4")
+  //       .send(user)
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equal(200);
+  //         result.should.be.a("string").that.equals("Succusful update!");
+  //         done();
+  //       });
+  //   });
+  // });
+  // describe("UC-206 Gebruiker verwijderen", () => {
+  //   it("TC-206-1 When a user does not exist, a valid error should be returned", (done) => {
+  //     chai
+  //       .request(server)
+  //       .delete("/api/user/100000")
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equal(400);
+  //         result.should.be.a("string").that.equals("User does not exist");
+  //         done();
+  //       });
+  //   });
+  //   it("TC-206-4 When a user is succesfully deleted, a valid response should be returned", (done) => {
+  //     chai.request(server).delete(`/api/user/${insertedUserId}`).end();
+  //     chai
+  //       .request(server)
+  //       .delete(`/api/user/${insertedTestUserId}`)
+  //       .end((err, res) => {
+  //         console.log(insertedTestUserId);
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equal(200);
+  //         result.should.be.a("string").that.equals("Succesful deletion");
+  //         done();
+  //       });
+  //   });
+  // });
 });
