@@ -28,7 +28,6 @@ let controller = {
       assert(pattern.test(req.body.emailAdress), "EmailAdress is not valid");
       next();
     } catch (err) {
-      console.log(err.message);
       const error = {
         status: 400,
         result: err.message,
@@ -55,7 +54,7 @@ let controller = {
     const phoneNumber = req.body.phoneNumber;
     try {
       assert(
-        phoneNumber.length >= 11 && phoneNumber.length <= 8,
+        phoneNumber.length <= 11 && phoneNumber.length >= 8,
         "Length of a phone number can only be between 8 and 11"
       );
       next();
@@ -88,7 +87,6 @@ let controller = {
   },
   getAllUsers: (req, res) => {
     const queryParams = req.query;
-    console.log(queryParams);
 
     let { firstName, isActive } = queryParams;
     let queryString = "SELECT * FROM user";
@@ -105,7 +103,6 @@ let controller = {
       }
     }
     queryString += ";";
-    console.log(queryString);
     let users = [];
 
     pool.query(queryString, (error, results, fields) => {
@@ -116,7 +113,6 @@ let controller = {
         status: 200,
         result: users,
       });
-
     });
   },
   getUserById: (req, res, next) => {
@@ -174,10 +170,12 @@ let controller = {
   },
   updateUser: (req, res, next) => {
     const userId = req.params.id;
-    const token = req.headers.authorization;
-    const userIdToken = jwt.decode(token);
+    const tokenString = req.headers.authorization.split(" ");
+    const token = tokenString[1];
+    const payload = jwt.decode(token);
+    const userIdToken = payload.userId;
 
-    if (userId === userIdToken) {
+    if (userId == userIdToken) {
       const user = req.body;
       pool.query(
         `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
@@ -187,7 +185,7 @@ let controller = {
 
           if (affectedRows == 0) {
             const error = {
-              status: 404,
+              status: 400,
               message: "User with provided id does not exist",
             };
             next(error);
@@ -206,21 +204,23 @@ let controller = {
   },
   deleteUser: (req, res, next) => {
     const userId = req.params.id;
-    const token = req.headers.authorization;
-    const userIdToken = jwt.decode(token);
+    const tokenString = req.headers.authorization.split(" ");
+    const token = tokenString[1];
+    const payload = jwt.decode(token);
+    const userIdToken = payload.userId;
 
-    if (userId === userIdToken) {
+    if (userId == userIdToken) {
       pool.query(`DELETE FROM user WHERE id=${userId}`, (err, results) => {
         if (err) throw err;
         const { affectedRows } = results;
         if (!affectedRows) {
           const error = {
             status: 400,
-            result: "User does not exist",
+            message: "User does not exist",
           };
           next(error);
         } else {
-          res.status(200).json({ status: 200, result: "Succesful deletion" });
+          res.status(200).json({ status: 200, message: "Succesful deletion" });
         }
       });
     } else {
