@@ -13,13 +13,3 @@ const pool = mysql.createPool({
 
 module.exports = pool;
 
-pool.getConnection(function (err, connection) {
-  if (err) throw err; // not connected!
-
-  // Use the connection
-  connection.query("SELECT * FROM user", function (error, results, fields) {
-    // When done with the connection, release it.
-    connection.release();
-    if (error) throw error;
-  });
-});
