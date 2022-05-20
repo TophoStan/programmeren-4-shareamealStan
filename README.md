@@ -8,7 +8,7 @@ This is an API enables users to post and join eachothers meals. To make this pos
 
 ## Installation
 
-The api is running on a heroku server https://shareamealstant.herokuapp.com/api/. But if you want to run it locally you can use XAMPP and it should work instantly! But you will need to have run the .sql script in the root of the folder. Deploying this code on your own server should not be any different but the ENV variables should be changed!
+The api is running on a heroku server https://shareamealstant.herokuapp.com/api/. But if you want to run it locally you can use XAMPP and it should work instantly! But you will need to have run the .sql script in the root of the folder. Deploying this code on your own server should not be any different but the DOTENV variables should be changed!
 
 ## Usage
 
