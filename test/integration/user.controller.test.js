@@ -28,8 +28,6 @@ const token =
 
 chai.should();
 chai.use(chaiHttp);
-let insertedUserId = 0;
-let insertedTestUserId = 0;
 
 describe("TC-User", () => {
   describe("UC-101 Login", () => {

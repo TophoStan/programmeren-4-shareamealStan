@@ -1,7 +1,6 @@
 const assert = require("assert");
 const pool = require("../database/dbconnection");
 const jwt = require("jsonwebtoken");
-const jwtSecretKey = require("../config/config").jwtSecretKey;
 
 const controller = {
   validateMeal: (req, res, next) => {
@@ -19,7 +18,7 @@ const controller = {
     } catch (err) {
       const error = {
         status: 400,
-        result: err.message,
+        message: err.message,
       };
       next(error);
     }
@@ -39,10 +38,14 @@ const controller = {
     }
   },
   getAllMeals: (req, res, next) => {
+    let meals = [];
     pool.query("SELECT * FROM meal", (err, result, fields) => {
+      result.forEach((meal) => {
+        meals.push(meal);
+      });
       res.status(200).json({
         status: 200,
-        result: result,
+        result: meals,
       });
     });
   },
@@ -52,10 +55,18 @@ const controller = {
     pool.query(
       `SELECT * FROM meal where id=${mealId}`,
       (err, result, fields) => {
-        res.status(200).json({
-          status: 200,
-          result: result,
-        });
+        if (result.length > 0) {
+          res.status(200).json({
+            status: 200,
+            result: result[0],
+          });
+        } else {
+          const error = {
+            status: 404,
+            message: "meal with provided id does not exist",
+          };
+          next(error);
+        }
       }
     );
   },
@@ -72,41 +83,99 @@ const controller = {
       } else {
         res.status(201).json({
           status: 201,
-          message: "Meal is toegevoegd in database",
           result: { id: result.insertId, ...meal },
         });
       }
     });
   },
   updateMeal: (req, res, next) => {
-    const mealId = req.params.id;
     const meal = req.body;
-    const token = jwt.decode(req.headers.authorization);
-    if (meal.cookId == token.id) {
-      pool.query(
-        `UPDATE meal SET isActive =${meal.isActive}, isVega=${meal.isVega}, isVegan=${meal.isVegan}, isToTakeHome=${meal.isToTakeHome}, dateTime=${meal.dateTime},maxAmountOfParticipants=${meal.maxAmountOfParticipants}, price=${meal.price}, imageUrl=${meal.imageUrl}, cookId=${meal.cookId}, createDate=${meal.createDate}, updateDate=${meal.updateDate}, name=${meal.name}, description=${meal.description}, allergenes=${meal.allergenes} `,
-        (err, results) => {
-          const { affectedRows } = results;
-          if (err) throw err;
-          if (affectedRows == 0) {
+    const mealId = req.params.id;
+    const tokenString = req.headers.authorization.split(" ");
+    const token = tokenString[1];
+    const payload = jwt.decode(token);
+    const userId = payload.userId;
+
+    pool.query(
+      `SELECT cookId FROM meal WHERE id = ${mealId}`,
+      (err, result, fields) => {
+        //Kijk of meal bestaat
+        if (result.length > 0) {
+          //Kijk of meal van user is
+          console.log(result.length);
+          if (result[0].cookId == userId) {
+            pool.query(
+              `UPDATE meal SET isActive =${meal.isActive}, isVega=${meal.isVega}, isVegan=${meal.isVegan}, isToTakeHome=${meal.isToTakeHome},maxAmountOfParticipants=${meal.maxAmountOfParticipants}, price=${meal.price}, imageUrl='${meal.imageUrl}', cookId=${userId}, name='${meal.name}', description='${meal.description}', allergenes='${meal.allergenes}' WHERE id = ${mealId} `,
+              (err, results) => {
+                //Update meal
+                res.status(200).json({
+                  status: 200,
+                  message: "Succusful update!",
+                  result: meal,
+                });
+              }
+            );
+          } else {
             const error = {
-              status: 404,
-              message: "Meal with provided id does not exist",
+              status: 403,
+              message: "Cannot update a meal that is not yours!",
             };
             next(error);
-          } else {
-            res.status(200).json({ status: 200, result: "Succusful update!" });
           }
+        } else {
+          const error = {
+            status: 404,
+            message: "Meal with provided id does not exist",
+          };
+          next(error);
         }
-      );
-    } else {
-      res.status(403).json({
-        status: 403,
-        message: "Cannot update a meal that is not yours!",
-      });
-    }
+      }
+    );
   },
-  deleteMeal: (req, res, next) => {},
+  deleteMeal: (req, res, next) => {
+    const meal = req.body;
+    const mealId = req.params.id;
+    const tokenString = req.headers.authorization.split(" ");
+    const token = tokenString[1];
+    const payload = jwt.decode(token);
+    const userId = payload.userId;
+
+    pool.query(
+      `SELECT cookId FROM meal WHERE id = ${mealId}`,
+      (err, result, fields) => {
+        //Kijk of meal bestaat
+        if (result.length > 0) {
+          //Kijk of meal van user is
+          console.log(result.length);
+          if (result[0].cookId == userId) {
+            pool.query(
+              `DELET FROM meal WHERE id = ${mealId} `,
+              (err, results) => {
+                //Update meal
+                res.status(200).json({
+                  status: 200,
+                  result: "Succusful deletion!",
+                });
+              }
+            );
+          } else {
+            const error = {
+              status: 403,
+              message:
+                "You are not the owner of this meal therefore you can't delete it",
+            };
+            next(error);
+          }
+        } else {
+          const error = {
+            status: 404,
+            message: "Meal with provided id does not exist",
+          };
+          next(error);
+        }
+      }
+    );
+  },
 };
 
 module.exports = controller;
