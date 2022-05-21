@@ -86,7 +86,7 @@ describe("UC meals", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(201);
-          result.price.should.equals(10);
+          result.price.should.equals(3);
           done();
         });
     });
