@@ -213,7 +213,8 @@ describe("UC meals", () => {
     });
     it("TC-302-5 Maaltijd succesvol gewijzigd", (done) => {
       pool.query(INSERT_JOHN_DOE, () => {
-        pool.query(INSERT_MEAL_JOHN_DOE, () => {
+        pool.query(INSERT_MEAL_JOHN_DOE, (err, result) => {
+          console.log(err);
           chai
             .request(server)
             .put("/api/meal/1")
