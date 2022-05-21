@@ -78,6 +78,7 @@ const controller = {
         const error = {
           status: 409,
           message: "Meal has not been added",
+          error: err.message,
         };
         next(error);
       } else {

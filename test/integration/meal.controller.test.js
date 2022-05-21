@@ -72,6 +72,7 @@ describe("UC meals", () => {
           description: " Thomas houdt van koekjes",
           price: 10,
           maxAmountOfParticipants: 1,
+          dateTime: "1000-01-01 00:00:00",
         })
         .set({ Authorization: `Bearer ${token}` })
         .end((req, res) => {
@@ -216,6 +217,7 @@ describe("UC meals", () => {
               maxAmountOfParticipants: 2,
               isActive: 1,
               isToTakeHome: 1,
+              dateTime: "1000-01-01 00:00:00",
               imageUrl:
                 "https://www.landleven.nl/getmedia/58639eae-3b6a-44db-b9ed-f417bb2859da/gemengde-salade-min.jpg?width=816&height=544&ext=.jpg",
               allergenes: "lactose",
