@@ -100,7 +100,6 @@ const controller = {
     pool.query(
       `SELECT cookId FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
-        console.log(result);
         //Kijk of meal bestaat
         if (result.length > 0) {
           //Kijk of meal van user is

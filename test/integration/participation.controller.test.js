@@ -14,7 +14,7 @@ const INSERT_JOHN_DOE =
   "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`, `isActive` ) VALUES" +
   '(343, "John", "Doe", "j.doe@server.com", "test", "test", "test", false);';
 const INSERT_MEAL_JOHN_DOE =
-  "INSERT INTO `meal` (`id`, `isActive`, `isVega`, `isVegan`, `isToTakeHome`, `maxAmountOfParticipants`, `price`, `imageUrl`, `cookId`, `name`, `description`, `allergenes`) VALUES (1, '0', '0', '0', '1', '6', '10', '', '343', 'Koekjes', 'Thomas eet graag dikke koeken', '')";
+  "INSERT INTO `meal` (`id`, `isActive`, `isVega`, `isVegan`, `isToTakeHome`, `maxAmountOfParticipants`, `price`, `imageUrl`, `cookId`, `name`, `description`, `allergenes`, `dateTime`) VALUES (1, '0', '0', '0', '1', '6', '10', '', '343', 'Koekjes', 'Thomas eet graag dikke koeken', '', '1000-01-01 00:00:00')";
 const INSERT_JOHN_DOE_MEAL_PARTICIPATE =
   "INSERT INTO meal_participants_user (mealId, userId) VALUES (1, 343) ";
 

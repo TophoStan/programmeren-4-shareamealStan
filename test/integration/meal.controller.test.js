@@ -113,7 +113,6 @@ describe("UC meals", () => {
             let { status, message } = res.body;
             status.should.equals(400);
             message.should.be.a("string").that.equals("Name must be a string.");
-            console.log(res.body);
             done();
           });
       });
@@ -143,7 +142,6 @@ describe("UC meals", () => {
             message.should.be
               .a("string")
               .that.equals("Authorization header missing!");
-            console.log(res.body);
             done();
           });
       });
@@ -171,7 +169,6 @@ describe("UC meals", () => {
               Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY1MzA1NTI5NSwiZXhwIjoxNjU0MDkyMDk1fQ.OKjPkj0LsoVzksiIHt1UcXzcLDohIs6gjU-C0N-9ROg`,
             })
             .end((req, res) => {
-              console.log(res.body);
               res.should.be.an("object");
               let { status, message } = res.body;
               status.should.equals(403);
@@ -233,7 +230,6 @@ describe("UC meals", () => {
             })
             .set({ Authorization: `Bearer ${token}` })
             .end((req, res) => {
-              console.log(res.body);
               res.should.be.an("object");
               let { status, result, message } = res.body;
               status.should.equals(200);
@@ -319,7 +315,6 @@ describe("UC meals", () => {
         .end((req, res) => {
           let { status, message } = res.body;
           status.should.equals(401);
-          console.log(message);
           message.should.be
             .a("string")
             .that.equals("Authorization header missing!");
