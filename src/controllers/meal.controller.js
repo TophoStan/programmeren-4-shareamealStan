@@ -55,7 +55,13 @@ const controller = {
     pool.query(
       `SELECT * FROM meal where id=${mealId}`,
       (err, result, fields) => {
-        if (result.length > 0) {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        } else if (result.length > 0) {
           res.status(200).json({
             status: 200,
             result: result[0],
@@ -100,8 +106,15 @@ const controller = {
     pool.query(
       `SELECT cookId FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        }
         //Kijk of meal bestaat
-        if (result.length > 0) {
+        else if (result.length > 0) {
           //Kijk of meal van user is
           if (result[0].cookId == userId) {
             pool.query(
@@ -143,8 +156,15 @@ const controller = {
     pool.query(
       `SELECT cookId FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        }
         //Kijk of meal bestaat
-        if (result.length > 0) {
+        else if (result.length > 0) {
           //Kijk of meal van user is
           console.log(result.length);
           if (result[0].cookId == userId) {

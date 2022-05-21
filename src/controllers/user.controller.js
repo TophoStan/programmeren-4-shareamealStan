@@ -123,13 +123,11 @@ let controller = {
         const user = results[0];
         if (err) {
           const error = {
-            status: 404,
-            message: "User with provided Id does not exist",
+            status: 500,
+            message: err.message,
           };
           next(error);
-        }
-
-        if (user != null) {
+        } else if (user != null) {
           res.status(200).json({
             status: 200,
             result: user,
@@ -153,7 +151,13 @@ let controller = {
     pool.query(
       `SELECT id, firstName, lastName, emailAdress FROM user where id=${userId}`,
       (err, results, fields) => {
-        if (!(results.length > 0)) {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        } else if (!(results.length > 0)) {
           const error = {
             status: 404,
             message: "User does not exist",
@@ -182,7 +186,13 @@ let controller = {
         (err, results) => {
           const { affectedRows } = results;
 
-          if (affectedRows == 0) {
+          if (err) {
+            const error = {
+              status: 500,
+              message: err.message,
+            };
+            next(error);
+          } else if (affectedRows == 0) {
             const error = {
               status: 400,
               message: "User with provided id does not exist",
@@ -211,7 +221,13 @@ let controller = {
     if (userId == userIdToken) {
       pool.query(`DELETE FROM user WHERE id=${userId}`, (err, results) => {
         const { affectedRows } = results;
-        if (!affectedRows) {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        } else if (!affectedRows) {
           const error = {
             status: 400,
             message: "User does not exist",

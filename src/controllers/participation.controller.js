@@ -13,7 +13,13 @@ const controller = {
       `SELECT * FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
         console.log(result);
-        if (result.length > 0) {
+        if (err) {
+          const error = {
+            status: 500,
+            message: err.message,
+          };
+          next(error);
+        } else if (result.length > 0) {
           //Meal exists
           const data = { mealId: mealId, userId: userId };
           pool.query(
