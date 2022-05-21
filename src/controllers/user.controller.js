@@ -181,7 +181,6 @@ let controller = {
         `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
         (err, results) => {
           const { affectedRows } = results;
-          if (err) throw err;
 
           if (affectedRows == 0) {
             const error = {
@@ -211,7 +210,6 @@ let controller = {
 
     if (userId == userIdToken) {
       pool.query(`DELETE FROM user WHERE id=${userId}`, (err, results) => {
-        if (err) throw err;
         const { affectedRows } = results;
         if (!affectedRows) {
           const error = {

@@ -24,7 +24,6 @@ const controller = {
                 pool.query(
                   `DELETE FROM meal_participants_user WHERE mealId= ${mealId} AND userId=${userId}`,
                   (err, result) => {
-                    if (err) throw err;
                     res.status(200).json({
                       status: 200,
                       result: {
@@ -39,7 +38,6 @@ const controller = {
                   `INSERT INTO meal_participants_user (mealId, userId) VALUES (${mealId}, ${userId})`,
                   data,
                   (err, result) => {
-                    if (err) throw err;
                     res.status(200).json({
                       status: 200,
                       result: {
