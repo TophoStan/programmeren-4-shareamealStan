@@ -100,10 +100,10 @@ const controller = {
     pool.query(
       `SELECT cookId FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
+        console.log(result);
         //Kijk of meal bestaat
         if (result.length > 0) {
           //Kijk of meal van user is
-          console.log(result.length);
           if (result[0].cookId == userId) {
             pool.query(
               `UPDATE meal SET isActive =${meal.isActive}, isVega=${meal.isVega}, isVegan=${meal.isVegan}, isToTakeHome=${meal.isToTakeHome},maxAmountOfParticipants=${meal.maxAmountOfParticipants}, price=${meal.price}, imageUrl='${meal.imageUrl}', cookId=${userId}, name='${meal.name}', description='${meal.description}', allergenes='${meal.allergenes}' WHERE id = ${mealId} `,
