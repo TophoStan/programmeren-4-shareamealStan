@@ -64,31 +64,33 @@ describe("UC meals", () => {
         });
     });
     it("TC-301-3 Maaltijd succesvol toegevoegd", (done) => {
-      chai
-        .request(server)
-        .post("/api/meal")
-        .send({
-          name: "Salade",
-          description: "Mooie zomerse salade met veel groente",
-          price: 3,
-          maxAmountOfParticipants: 2,
-          isActive: 1,
-          isToTakeHome: 1,
-          dateTime: "1000-01-01 00:00:00",
-          imageUrl:
-            "https://www.landleven.nl/getmedia/58639eae-3b6a-44db-b9ed-f417bb2859da/gemengde-salade-min.jpg?width=816&height=544&ext=.jpg",
-          allergenes: "lactose",
-          isVega: 1,
-          isVegan: 0,
-        })
-        .set({ Authorization: `Bearer ${token}` })
-        .end((req, res) => {
-          res.should.be.an("object");
-          let { status, result } = res.body;
-          status.should.equals(201);
-          result.price.should.equals(3);
-          done();
-        });
+      pool.query(INSERT_JOHN_DOE, () => {
+        chai
+          .request(server)
+          .post("/api/meal")
+          .send({
+            name: "Salade",
+            description: "Mooie zomerse salade met veel groente",
+            price: 3,
+            maxAmountOfParticipants: 2,
+            isActive: 1,
+            isToTakeHome: 1,
+            dateTime: "1000-01-01 00:00:00",
+            imageUrl:
+              "https://www.landleven.nl/getmedia/58639eae-3b6a-44db-b9ed-f417bb2859da/gemengde-salade-min.jpg?width=816&height=544&ext=.jpg",
+            allergenes: "lactose",
+            isVega: 1,
+            isVegan: 0,
+          })
+          .set({ Authorization: `Bearer ${token}` })
+          .end((req, res) => {
+            res.should.be.an("object");
+            let { status, result } = res.body;
+            status.should.equals(201);
+            result.price.should.equals(3);
+            done();
+          });
+      });
     });
   });
   describe("UC-302 Maaltijd wijzigen", () => {
