@@ -77,7 +77,12 @@ const controller = {
     );
   },
   addMeal: (req, res, next) => {
+    const tokenString = req.headers.authorization.split(" ");
+    const token = tokenString[1];
+    const payload = jwt.decode(token);
+    const userId = payload.userId;
     const meal = req.body;
+    meal.cookId = userId;
     pool.query(`INSERT INTO meal SET ?`, meal, (err, result) => {
       if (err) {
         console.log(err.message);
@@ -156,6 +161,7 @@ const controller = {
     pool.query(
       `SELECT cookId FROM meal WHERE id = ${mealId}`,
       (err, result, fields) => {
+        console.log(err);
         if (err) {
           const error = {
             status: 500,
@@ -169,7 +175,7 @@ const controller = {
           console.log(result.length);
           if (result[0].cookId == userId) {
             pool.query(
-              `DELET FROM meal WHERE id = ${mealId} `,
+              `DELETE FROM meal WHERE id = ${mealId} `,
               (err, results) => {
                 //Update meal
                 res.status(200).json({
